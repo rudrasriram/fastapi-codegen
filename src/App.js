@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000";
+
 function App() {
   const [prompt, setPrompt] = useState("");
   const [language, setLanguage] = useState("Java");
@@ -10,13 +12,14 @@ function App() {
 
   const generateCode = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/generate_code/", {
+      const response = await axios.post(`${API_URL}/generate_code/`, {
         prompt,
         language,
       });
       setCode(response.data.code);
       setModifiedCode(""); // Clear previous modified code
     } catch (error) {
+      console.error("Error generating code:", error);
       setCode("Error generating code.");
     }
   };
@@ -27,12 +30,13 @@ function App() {
       return;
     }
     try {
-      const response = await axios.post("http://127.0.0.1:8000/modify_code/", {
+      const response = await axios.post(`${API_URL}/modify_code/`, {
         code,
         modification,
       });
       setModifiedCode(response.data.modified_code);
     } catch (error) {
+      console.error("Error modifying code:", error);
       setModifiedCode("Error modifying code.");
     }
   };
