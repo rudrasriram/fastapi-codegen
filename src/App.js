@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const API_URL ="https://fastapi-codegen.onrender.com/" || "http://127.0.0.1:8000";
+// Use environment variable for backend URL (fallback to localhost)
+const API_URL = process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000";
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -19,8 +20,8 @@ function App() {
       setCode(response.data.code);
       setModifiedCode(""); // Clear previous modified code
     } catch (error) {
-      console.error("Error generating code:", error);
-      setCode("Error generating code.");
+      console.error("Error generating code:", error.response?.data?.detail || error.message);
+      setCode(`Error: ${error.response?.data?.detail || "Could not generate code."}`);
     }
   };
 
@@ -36,8 +37,8 @@ function App() {
       });
       setModifiedCode(response.data.modified_code);
     } catch (error) {
-      console.error("Error modifying code:", error);
-      setModifiedCode("Error modifying code.");
+      console.error("Error modifying code:", error.response?.data?.detail || error.message);
+      setModifiedCode(`Error: ${error.response?.data?.detail || "Could not modify code."}`);
     }
   };
 
@@ -102,5 +103,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
